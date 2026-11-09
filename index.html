@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e0e0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Vhod 19.12</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<!-- ====== NASTAVITVE: vpiši podatke iz Supabase (Project Settings -> API Keys) ====== -->
+<script>
+const CONFIG = {
+  SUPABASE_URL: "https://dbkirjqmubykaverasip.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRia2lyanFtdWJ5a2F2ZXJhc2lwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyNDIxNzksImV4cCI6MjEwOTgxODE3OX0.qr4yAL9JjUwKlB9Oc6yjdRZTie3x2CGMg9ZNRckAHi0"
+};
+</script>
+<style>
+:root{--bg:#0e0e0c;--panel:#1a1a17;--line:#33332e;--fg:#ecebe4;--mute:#97958b;--lime:#c8ff1a;--ok:#1fbf5b;--bad:#e5342b;--warn:#f0a500;
+--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--sans:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-tap-highlight-color:transparent}
+body{padding:env(safe-area-inset-top) max(14px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(14px,env(safe-area-inset-left))}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding-block:12px 28px;min-height:100%}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--fg);padding-bottom:8px}
+h1{margin:0;font-size:1.35rem;font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
+.mono{font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.tag{font-size:.7rem;color:var(--mute)}
+button{font:inherit;cursor:pointer}
+.iconbtn{background:none;border:1px solid var(--line);color:var(--mute);padding:6px 10px;font-size:.75rem}
+.count{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--line)}
+.count div{padding:10px 12px}.count div+div{border-left:2px solid var(--line)}
+.count b{display:block;font-size:2.1rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.count span{font-size:.66rem;color:var(--mute)}
+.cam{position:relative;aspect-ratio:1;max-width:100%;background:#000;border:2px solid var(--line);overflow:hidden}
+.cam video{width:100%;height:100%;object-fit:cover;display:block}
+.cam .frame{position:absolute;inset:16%;border:3px solid var(--lime);box-shadow:0 0 0 999px #0007}
+.cam .msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--mute);font-size:.95rem;line-height:1.5}
+.start{background:var(--lime);color:#111;border:none;font-weight:900;font-size:1.2rem;text-transform:uppercase;padding:20px;width:100%}
+form{display:flex;gap:8px}
+input{flex:1;min-width:0;background:var(--panel);border:2px solid var(--line);color:var(--fg);font-family:var(--mono);font-size:1rem;letter-spacing:.06em;padding:12px}
+#code{text-transform:uppercase}
+form button,.btn{background:var(--fg);color:var(--bg);border:none;font-family:var(--mono);font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:0 16px}
+.btn{padding:14px 16px;width:100%}
+.log h2{font-size:.7rem;color:var(--mute);margin:6px 0;font-weight:400}
+.log ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.log li{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.88rem;padding:8px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.log li span:last-child{color:var(--mute)}
+.status{font-size:.7rem;color:var(--mute)}
+/* full screen verdict */
+#v{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;z-index:50}
+#v.ok{background:var(--ok);color:#03190b}#v.bad{background:var(--bad);color:#fff}#v.warn{background:var(--warn);color:#1d1400}
+#v .big{font-size:clamp(2.6rem,13vw,4.6rem);font-weight:900;line-height:.95;text-transform:uppercase}
+#v .sub{font-family:var(--mono);font-size:1.05rem;letter-spacing:.04em;max-width:24ch;line-height:1.4}
+#v .tap{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));font-size:.75rem;opacity:.7}
+.setup{display:flex;flex-direction:column;gap:10px}
+.setup label{font-size:.72rem;color:var(--mute)}
+.setup input{width:100%}
+.setup p{color:var(--mute);font-size:.9rem;line-height:1.5;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Vhod · 19.12</h1><button class="iconbtn mono" id="openSet">Nastavitve</button></header>
+
+  <section id="setup" class="setup" hidden>
+    <p>Vpiši PIN za vhod, ki ga dobiš od organizatorja. Ime naprave pomaga videti, kateri telefon je spustil koga.</p>
+    <label class="mono" for="pin">PIN za vhod</label><input id="pin" inputmode="numeric" autocomplete="off">
+    <label class="mono" for="dev">Ime naprave</label><input id="dev" placeholder="npr. Vhod 1" autocomplete="off">
+    <details hidden><summary class="mono tag">Povezava z bazo (samo če ni že nastavljena)</summary>
+      <div class="setup" style="margin-top:10px">
+        <label class="mono" for="surl">Supabase URL</label><input id="surl" autocomplete="off">
+        <label class="mono" for="skey">Supabase anon key</label><input id="skey" autocomplete="off">
+      </div></details>
+    <button class="btn" id="save">Shrani in začni</button>
+    <div class="status" id="setMsg"></div>
+  </section>
+
+  <section id="main" hidden>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="count"><div><b id="cIn">–</b><span class="mono">Vstopilo</span></div><div><b id="cLeft">–</b><span class="mono">Še veljavnih</span></div></div>
+      <div class="cam"><video id="vid" playsinline muted></video><div class="frame" id="frame" hidden></div>
+        <div class="msg" id="camMsg">Tapni spodnji gumb in dovoli kamero.</div></div>
+      <button class="start" id="startCam">Vklopi kamero</button>
+      <form id="manual" autocomplete="off"><input id="code" placeholder="MH-XXXXXXXX" aria-label="Koda vstopnice" maxlength="16"><button type="submit">Preveri</button></form>
+      <section class="log"><h2 class="mono">Zadnji vstopi</h2><ol id="log"><li><span>Nalagam …</span></li></ol></section>
+      <div class="status mono" id="status"></div>
+    </div>
+  </section>
+</div>
+
+<div id="v" hidden><div class="big" id="vBig"></div><div class="sub" id="vSub"></div><div class="tap mono">Tapni za naslednjega</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const RE=/^MH-[A-Z0-9]{8}$/;
+const store={get(k,d=''){try{return localStorage.getItem(k)??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const cfg=()=>({url:(store.get('surl')||CONFIG.SUPABASE_URL).replace(/\/$/,''),key:store.get('skey')||CONFIG.SUPABASE_ANON_KEY,pin:store.get('pin'),dev:store.get('dev')||'telefon'});
+const configured=()=>{const c=cfg();return c.pin&&!/VPISI/.test(c.url)&&!/VPISI/.test(c.key)};
+
+async function rpc(fn,body){
+  const c=cfg();
+  const r=await fetch(`${c.url}/rest/v1/rpc/${fn}`,{method:'POST',headers:{'Content-Type':'application/json',apikey:c.key,Authorization:'Bearer '+c.key},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
+}
+const hhmm=iso=>{try{return new Date(iso).toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'})}catch(e){return ''}};
+const num=n=>'№ '+String(n).padStart(3,'0');
+
+// ---- zvok + vibracija
+let ac=null;
+function beep(ok){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=ok?'sine':'square';
+  o.frequency.value=ok?1320:180;g.gain.value=.15;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+(ok?.18:.5))}catch(e){}
+  try{navigator.vibrate&&navigator.vibrate(ok?120:[90,60,90,60,250])}catch(e){}}
+
+// ---- prikaz rezultata čez cel zaslon
+let vTimer=null, paused=false;
+function verdict(kind,big,sub,ms){
+  const v=$('v');v.className=kind;$('vBig').textContent=big;$('vSub').textContent=sub||'';v.hidden=false;paused=true;
+  beep(kind==='ok');clearTimeout(vTimer);vTimer=setTimeout(hideV,ms||(kind==='ok'?2200:4000));
+}
+function hideV(){$('v').hidden=true;paused=false;lastRaw='';}
+$('v').addEventListener('click',hideV);
+
+// ---- preverjanje kode
+let busy=false;
+async function check(raw){
+  const code=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
+  if(!RE.test(code)){verdict('bad','Neveljavna','To ni koda vstopnice za ta dogodek.');return}
+  if(busy)return;busy=true;
+  try{
+    const r=await rpc('check_in',{p_code:code,p_pin:cfg().pin,p_device:cfg().dev});
+    if(r.status==='ok')verdict('ok','Vstop ✓',num(r.n)+' · '+r.code);
+    else if(r.status==='used')verdict('bad','Že uporabljena',num(r.n)+' je vstopila ob '+hhmm(r.used_at)+(r.used_by?' ('+r.used_by+')':'')+'.');
+    else if(r.status==='invalid')verdict('bad','Neveljavna',code+' ne obstaja.');
+    else if(r.status==='bad_pin'){verdict('warn','Napačen PIN','Vpiši pravi PIN v nastavitvah.');showSetup()}
+    else verdict('warn','Napaka','Neznan odgovor baze.');
+    loadStats();
+  }catch(e){verdict('warn','Ni povezave','Vstop NI zapisan. Preveri internet in skeniraj znova.')}
+  finally{busy=false}
+}
+$('manual').addEventListener('submit',e=>{e.preventDefault();check($('code').value);$('code').value='';$('code').blur()});
+
+// ---- kamera
+let stream=null,detector=null,lastRaw='';
+async function startCam(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1280}},audio:false});
+  }catch(e){$('camMsg').textContent='Kamera ni dovoljena. Dovoli kamero za to stran v nastavitvah brskalnika ali vpiši kodo ročno.';return}
+  const v=$('vid');v.srcObject=stream;await v.play();
+  $('camMsg').hidden=true;$('frame').hidden=false;$('startCam').hidden=true;
+  if('BarcodeDetector' in window){try{const f=await BarcodeDetector.getSupportedFormats();if(f.includes('qr_code'))detector=new BarcodeDetector({formats:['qr_code']})}catch(e){}}
+  try{if('wakeLock' in navigator)await navigator.wakeLock.request('screen')}catch(e){}
+  loop();
+}
+const cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true});
+async function loop(){
+  const v=$('vid');
+  if(!paused&&!busy&&v.readyState>=2){
+    let raw=null;
+    try{
+      if(detector){const r=await detector.detect(v);if(r.length)raw=r[0].rawValue}
+      else if(typeof jsQR==='function'){
+        const s=Math.min(1,640/Math.max(v.videoWidth,v.videoHeight));cv.width=v.videoWidth*s|0;cv.height=v.videoHeight*s|0;
+        cx.drawImage(v,0,0,cv.width,cv.height);const r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height,{inversionAttempts:'dontInvert'});if(r)raw=r.data}
+    }catch(e){}
+    if(raw&&raw!==lastRaw){lastRaw=raw;check(raw)}
+  }
+  setTimeout(()=>requestAnimationFrame(loop),120);
+}
+$('startCam').addEventListener('click',()=>{beep(true);startCam()});
+document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&stream){try{await navigator.wakeLock?.request('screen')}catch(e){}}});
+
+// ---- števec in zadnji vstopi
+async function loadStats(){
+  try{
+    const r=await rpc('door_stats',{p_pin:cfg().pin});
+    if(r.status!=='ok'){$('status').textContent='PIN ni pravilen.';return}
+    $('cIn').textContent=r.used;$('cLeft').textContent=r.total-r.used;
+    const ol=$('log');ol.textContent='';
+    if(!r.recent.length){ol.innerHTML='<li><span>Še nihče ni vstopil.</span></li>'}
+    for(const x of r.recent){const li=document.createElement('li'),a=document.createElement('span'),b=document.createElement('span');a.textContent=num(x.n)+'  '+x.code;b.textContent=hhmm(x.used_at);li.append(a,b);ol.append(li)}
+    $('status').textContent='Povezano · '+cfg().dev+' · osveženo '+new Date().toLocaleTimeString('sl-SI');
+  }catch(e){$('status').textContent='Ni povezave z bazo.'}
+}
+setInterval(()=>{if(!$('main').hidden&&document.visibilityState==='visible')loadStats()},8000);
+
+// ---- nastavitve
+function showSetup(){$('pin').value=store.get('pin');$('dev').value=store.get('dev');$('surl').value=store.get('surl');$('skey').value=store.get('skey');$('setup').hidden=false;$('main').hidden=true}
+function showMain(){$('setup').hidden=true;$('main').hidden=false;loadStats()}
+$('openSet').addEventListener('click',showSetup);
+$('save').addEventListener('click',async()=>{
+  store.set('pin',$('pin').value.trim());store.set('dev',$('dev').value.trim());
+  if($('surl').value.trim())store.set('surl',$('surl').value.trim());
+  if($('skey').value.trim())store.set('skey',$('skey').value.trim());
+  if(!configured()){$('setMsg').textContent='Manjka PIN ali povezava z bazo.';return}
+  $('setMsg').textContent='Preverjam …';
+  try{const r=await rpc('door_stats',{p_pin:cfg().pin});if(r.status==='ok'){$('setMsg').textContent='';showMain()}else $('setMsg').textContent='PIN ni pravilen.'}
+  catch(e){$('setMsg').textContent='Baza ni dosegljiva. Preveri URL, ključ in internet.'}
+});
+configured()?showMain():showSetup();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
